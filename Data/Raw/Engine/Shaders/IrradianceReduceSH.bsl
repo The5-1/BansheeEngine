@@ -12,27 +12,18 @@ technique IrradianceReduceSH
 	
 		struct SHCoeffsAndWeight
 		{
-			#if ORDER == 3
-			SHVector3RGB coeffs;
-			#else // Assuming order 5
-			SHVector5RGB coeffs;
-			#endif
+			SHVectorRGB coeffs;
 			float weight;
 		};
 
 		StructuredBuffer<SHCoeffsAndWeight> gInput;
-		
-		#if ORDER == 3
-		RWStructuredBuffer<SHVector3RGB> gOutput;
-		#else // Assuming order 5
-		RWStructuredBuffer<SHVector5RGB> gOutput;
-		#endif
+		RWTexture2D<float4> gOutput;
 		
 		[internal]
 		cbuffer Params
 		{
+			uint2 gOutputIdx;
 			uint gNumEntries;
-			uint gOutputIdx;
 		}			
 		
 		[numthreads(1, 1, 1)]
@@ -41,11 +32,7 @@ technique IrradianceReduceSH
 			uint groupId : SV_GroupID,
 			uint3 dispatchThreadId : SV_DispatchThreadID)
 		{
-			#if ORDER == 3
-			SHVector3RGB coeffs;
-			#else // Assuming order 5
-			SHVector5RGB coeffs;
-			#endif
+			SHVectorRGB coeffs;
 			float weight = 0;
 			
 			SHZero(coeffs.R);
@@ -69,8 +56,14 @@ technique IrradianceReduceSH
 			SHMultiply(coeffs.R, normFactor);
 			SHMultiply(coeffs.G, normFactor);
 			SHMultiply(coeffs.B, normFactor);
-				
-			gOutput[gOutputIdx] = coeffs;
+			
+			uint2 writeIdx = gOutputIdx;
+			[unroll]
+			for(int i = 0; i < SH_NUM_COEFFS; ++i)
+			{			
+				gOutput[writeIdx] = float4(coeffs.R.v[i], coeffs.G.v[i], coeffs.B.v[i], 0.0f);
+				writeIdx.x += 1;
+			}
 		}
 	};
 };

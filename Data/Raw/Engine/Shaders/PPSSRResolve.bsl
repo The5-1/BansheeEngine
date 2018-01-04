@@ -27,7 +27,7 @@ technique PPSSRResolve
 		}
 		
 		#if MSAA
-			Texture2DMS gSceneDepth;
+			Texture2DMS<float> gSceneDepth;
 		#else
 			Texture2D gSceneDepth;
 		#endif	
@@ -38,14 +38,14 @@ technique PPSSRResolve
 		SamplerState gPointSampler;
 		SamplerState gLinearSampler;		
 		
-		float3 fsmain(VStoFS input) : SV_Target0
+		float4 fsmain(VStoFS input) : SV_Target0
 		{
 			#if MSAA
 				return temporalResolve(
 					gSceneDepth, 
 					gSceneColor, gLinearSampler, gSceneColorTexelSize, 
 					gPrevColor, gLinearSampler, gSceneColorTexelSize,
-					gManualExposure, input.position.xy, input.screenPos, 0);
+					gManualExposure, input.uv0, input.screenPos, 0);
 			#else
 				return temporalResolve(
 					gSceneDepth, gPointSampler, gSceneDepthTexelSize,

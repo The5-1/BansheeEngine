@@ -22,15 +22,23 @@ mixin ImageBasedLighting
 			float2 padding;
 		};
 	
+		[internal]
 		TextureCube gSkyReflectionTex;
 		SamplerState gSkyReflectionSamp;
-				
+		
+		[internal]
 		TextureCubeArray gReflProbeCubemaps;
 		SamplerState gReflProbeSamp;
 		
+		[internal]
 		Texture2D gAmbientOcclusionTex;
-		Texture2D gSSRTex;
+		SamplerState gAmbientOcclusionSamp;
 		
+		[internal]
+		Texture2D gSSRTex;
+		SamplerState gSSRSamp;
+		
+		[internal]
 		Texture2D gPreintegratedEnvBRDF;
 		SamplerState gPreintegratedEnvBRDFSamp;
 		
@@ -43,6 +51,7 @@ mixin ImageBasedLighting
 			Buffer<uint> gReflectionProbeIndices;
 		#endif
 		
+		[internal]
 		cbuffer ReflProbeParams
 		{
 			uint gReflCubemapNumMips;
@@ -94,7 +103,7 @@ mixin ImageBasedLighting
 		
 		float3 getLookupForBoxProxy(float3 originWS, float3 dirWS, float3 centerWS, float3 extents, float4x4 invBoxTransform, float transitionDistance, out float contribution)
 		{
-			// Transform origin and direction into box local space, where it is united sized and axis aligned
+			// Transform origin and direction into box local space, where it is unit sized and axis aligned
 			float3 originLS = mul(invBoxTransform, float4(originWS, 1)).xyz;
 			float3 dirLS = mul(invBoxTransform, float4(dirWS, 0)).xyz;
 			
@@ -117,7 +126,7 @@ mixin ImageBasedLighting
 			// Calculate contribution
 			//// Shrink the box so fade out happens within box extents
 			float3 reducedExtents = extents - float3(transitionDistance, transitionDistance, transitionDistance);
-			float distToBox = getDistBoxToPoint(originLS * reducedExtents, reducedExtents);
+			float distToBox = getDistBoxToPoint(originLS * extents, reducedExtents);
 			
 			float normalizedDistance = distToBox / transitionDistance;
 			
@@ -143,6 +152,7 @@ mixin ImageBasedLighting
 			float mipLevel = mapRoughnessToMipLevel(roughness, gReflCubemapNumMips);
 			
 			float3 output = 0;
+			[loop]
 			for(uint i = 0; i < numProbes; i++)
 			{
 				if(alpha < 0.001f)

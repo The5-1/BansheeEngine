@@ -58,6 +58,7 @@ technique PPSSRTrace
 		SamplerState gSceneColorSamp;
 		
 		Texture2D gHiZ;
+		SamplerState gHiZSamp;
 		
 		float random (float2 st) 
 		{
@@ -83,7 +84,7 @@ technique PPSSRTrace
 			#endif
 		
 			#if MSAA_COUNT > 1
-			SurfaceData surfData = getGBufferData(trunc(pixelPos.xy), sampleIdx);
+			SurfaceData surfData = getGBufferData(trunc(input.uv0.xy), sampleIdx);
 			#else
 			SurfaceData surfData = getGBufferData(input.uv0);
 			#endif
@@ -149,7 +150,7 @@ technique PPSSRTrace
 					
 				rayMarchParams.rayDir = R;
 
-				float4 rayHit = rayMarch(gHiZ, gDepthBufferSamp, rayMarchParams);
+				float4 rayHit = rayMarch(gHiZ, gHiZSamp, rayMarchParams);
 				if(rayHit.w < 1.0f) // Hit
 				{
 					float4 color = gSceneColor.Sample(gSceneColorSamp, rayHit.xy);
@@ -167,11 +168,9 @@ technique PPSSRTrace
 					sum += color * dirFade;
 				}
 			}
-			
-			// Divide by total number of rays, instead of actual number of rays that passed the test. This scales down the
-			// contribution for pixels for which many rays failed the test and might not be accurate.
-			float4 output = sum / NUM_RAYS; 
-			
+
+			float4 output = sum / NUM_RAYS;
+						
 			// Move back to high range (reverse tonemap)
 			output.rgb /= (1 - LuminanceRGB(output.rgb));
 			

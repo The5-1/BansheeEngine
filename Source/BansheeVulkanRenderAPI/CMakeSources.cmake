@@ -1,97 +1,115 @@
 set(BS_BANSHEEVULKANRENDERAPI_INC_NOFILTER
-	"Include/Win32/BsWin32VideoModeInfo.h"
-	"Include/Win32/BsWin32RenderWindow.h"	
-	"Include/BsVulkanVertexBuffer.h"
-	"Include/BsVulkanTimerQuery.h"
-	"Include/BsVulkanTexture.h"
-	"Include/BsVulkanRenderTexture.h"
-	"Include/BsVulkanPrerequisites.h"
-	"Include/BsVulkanOcclusionQuery.h"
-	"Include/BsVulkanIndexBuffer.h"
-	"Include/BsVulkanHardwareBuffer.h"
-	"Include/BsVulkanGpuProgram.h"
-	"Include/BsVulkanGpuParamBlockBuffer.h"
-	"Include/BsVulkanGpuBuffer.h"
-	"Include/BsVulkanEventQuery.h"
-	"Include/BsVulkanRenderAPI.h"
-	"Include/BsVulkanCommandBuffer.h"
-	"Include/BsVulkanDevice.h"
-	"Include/BsVulkanGpuPipelineState.h"
-	"Include/BsVulkanSwapChain.h"
-	"Include/BsVulkanFramebuffer.h"
-	"Include/BsVulkanUtility.h"
-	"Include/BsVulkanGpuParams.h"
-	"Include/BsVulkanDescriptorPool.h"
-	"Include/BsVulkanDescriptorLayout.h"
-	"Include/BsVulkanResource.h"
-	"Include/BsVulkanQueue.h"
-	"Include/BsVulkanDescriptorSet.h"
-	"Include/BsVulkanSamplerState.h"
-	"Include/BsVulkanGpuPipelineParamInfo.h"
+	"BsVulkanVertexBuffer.h"
+	"BsVulkanTimerQuery.h"
+	"BsVulkanTexture.h"
+	"BsVulkanRenderTexture.h"
+	"BsVulkanPrerequisites.h"
+	"BsVulkanOcclusionQuery.h"
+	"BsVulkanIndexBuffer.h"
+	"BsVulkanHardwareBuffer.h"
+	"BsVulkanGpuProgram.h"
+	"BsVulkanGpuParamBlockBuffer.h"
+	"BsVulkanGpuBuffer.h"
+	"BsVulkanEventQuery.h"
+	"BsVulkanRenderAPI.h"
+	"BsVulkanCommandBuffer.h"
+	"BsVulkanDevice.h"
+	"BsVulkanGpuPipelineState.h"
+	"BsVulkanSwapChain.h"
+	"BsVulkanFramebuffer.h"
+	"BsVulkanUtility.h"
+	"BsVulkanGpuParams.h"
+	"BsVulkanDescriptorPool.h"
+	"BsVulkanDescriptorLayout.h"
+	"BsVulkanResource.h"
+	"BsVulkanQueue.h"
+	"BsVulkanDescriptorSet.h"
+	"BsVulkanSamplerState.h"
+	"BsVulkanGpuPipelineParamInfo.h"
 )
 
 set(BS_BANSHEEVULKANRENDERAPI_INC_MANAGERS
-	"Include/BsVulkanTextureManager.h"
-	"Include/BsVulkanRenderWindowManager.h"
-	"Include/BsVulkanQueryManager.h"
-	"Include/BsVulkanGLSLProgramFactory.h"
-	"Include/BsVulkanHardwareBufferManager.h"
-	"Include/BsVulkanRenderAPIFactory.h"
-	"Include/BsVulkanCommandBufferManager.h"
-	"Include/BsVulkanRenderStateManager.h"
-	"Include/BsVulkanVertexInputManager.h"
-	"Include/BsVulkanDescriptorManager.h"
+	"Managers/BsVulkanTextureManager.h"
+	"Managers/BsVulkanRenderWindowManager.h"
+	"Managers/BsVulkanQueryManager.h"
+	"Managers/BsVulkanGLSLProgramFactory.h"
+	"Managers/BsVulkanHardwareBufferManager.h"
+	"Managers/BsVulkanRenderAPIFactory.h"
+	"Managers/BsVulkanCommandBufferManager.h"
+	"Managers/BsVulkanRenderStateManager.h"
+	"Managers/BsVulkanVertexInputManager.h"
+	"Managers/BsVulkanDescriptorManager.h"
 )
 
 set(BS_BANSHEEVULKANRENDERAPI_SRC_NOFILTER
-	"Source/Win32/BsWin32VideoModeInfo.cpp"
-	"Source/Win32/BsWin32RenderWindow.cpp"	
-	"Source/BsVulkanVertexBuffer.cpp"
-	"Source/BsVulkanTimerQuery.cpp"
-	"Source/BsVulkanTexture.cpp"
-	"Source/BsVulkanRenderTexture.cpp"
-	"Source/BsVulkanPlugin.cpp"
-	"Source/BsVulkanOcclusionQuery.cpp"
-	"Source/BsVulkanIndexBuffer.cpp"
-	"Source/BsVulkanHardwareBuffer.cpp"
-	"Source/BsVulkanGpuProgram.cpp"
-	"Source/BsVulkanGpuParamBlockBuffer.cpp"
-	"Source/BsVulkanGpuBuffer.cpp"
-	"Source/BsVulkanEventQuery.cpp"
-	"Source/BsVulkanRenderAPI.cpp"
-	"Source/BsVulkanCommandBuffer.cpp"
-	"Source/BsVulkanDevice.cpp"
-	"Source/BsVulkanGpuPipelineState.cpp"
-	"Source/BsVulkanSwapChain.cpp"
-	"Source/BsVulkanFramebuffer.cpp"
-	"Source/BsVulkanUtility.cpp"
-	"Source/BsVulkanGpuParams.cpp"
-	"Source/BsVulkanDescriptorPool.cpp"
-	"Source/BsVulkanDescriptorLayout.cpp"
-	"Source/BsVulkanResource.cpp"
-	"Source/BsVulkanQueue.cpp"
-	"Source/BsVulkanDescriptorSet.cpp"
-	"Source/BsVulkanSamplerState.cpp"
-	"Source/BsVulkanGpuPipelineParamInfo.cpp"
+	"BsVulkanVertexBuffer.cpp"
+	"BsVulkanTimerQuery.cpp"
+	"BsVulkanTexture.cpp"
+	"BsVulkanRenderTexture.cpp"
+	"BsVulkanPlugin.cpp"
+	"BsVulkanOcclusionQuery.cpp"
+	"BsVulkanIndexBuffer.cpp"
+	"BsVulkanHardwareBuffer.cpp"
+	"BsVulkanGpuProgram.cpp"
+	"BsVulkanGpuParamBlockBuffer.cpp"
+	"BsVulkanGpuBuffer.cpp"
+	"BsVulkanEventQuery.cpp"
+	"BsVulkanRenderAPI.cpp"
+	"BsVulkanCommandBuffer.cpp"
+	"BsVulkanDevice.cpp"
+	"BsVulkanGpuPipelineState.cpp"
+	"BsVulkanSwapChain.cpp"
+	"BsVulkanFramebuffer.cpp"
+	"BsVulkanUtility.cpp"
+	"BsVulkanGpuParams.cpp"
+	"BsVulkanDescriptorPool.cpp"
+	"BsVulkanDescriptorLayout.cpp"
+	"BsVulkanResource.cpp"
+	"BsVulkanQueue.cpp"
+	"BsVulkanDescriptorSet.cpp"
+	"BsVulkanSamplerState.cpp"
+	"BsVulkanGpuPipelineParamInfo.cpp"
 )
 
 set(BS_BANSHEEVULKANRENDERAPI_SRC_MANAGERS
-	"Source/BsVulkanTextureManager.cpp"
-	"Source/BsVulkanRenderWindowManager.cpp"
-	"Source/BsVulkanQueryManager.cpp"
-	"Source/BsVulkanGLSLProgramFactory.cpp"
-	"Source/BsVulkanHardwareBufferManager.cpp"
-	"Source/BsVulkanRenderAPIFactory.cpp"
-	"Source/BsVulkanCommandBufferManager.cpp"
-	"Source/BsVulkanRenderStateManager.cpp"
-	"Source/BsVulkanVertexInputManager.cpp"
-	"Source/BsVulkanDescriptorManager.cpp"
+	"Managers/BsVulkanTextureManager.cpp"
+	"Managers/BsVulkanRenderWindowManager.cpp"
+	"Managers/BsVulkanQueryManager.cpp"
+	"Managers/BsVulkanGLSLProgramFactory.cpp"
+	"Managers/BsVulkanHardwareBufferManager.cpp"
+	"Managers/BsVulkanRenderAPIFactory.cpp"
+	"Managers/BsVulkanCommandBufferManager.cpp"
+	"Managers/BsVulkanRenderStateManager.cpp"
+	"Managers/BsVulkanVertexInputManager.cpp"
+	"Managers/BsVulkanDescriptorManager.cpp"
+)
+
+set(BS_BANSHEEVULKANRENDERAPI_INC_WIN32
+	"Win32/BsWin32VideoModeInfo.h"
+	"Win32/BsWin32RenderWindow.h"
+)
+
+set(BS_BANSHEEVULKANRENDERAPI_SRC_WIN32
+	"Win32/BsWin32VideoModeInfo.cpp"
+	"Win32/BsWin32RenderWindow.cpp"
+)
+
+set(BS_BANSHEEVULKANRENDERAPI_INC_LINUX
+	"Linux/BsLinuxVideoModeInfo.h"
+	"Linux/BsLinuxRenderWindow.h"
+)
+
+set(BS_BANSHEEVULKANRENDERAPI_SRC_LINUX
+	"Linux/BsLinuxVideoModeInfo.cpp"
+	"Linux/BsLinuxRenderWindow.cpp"
 )
 
 source_group("Header Files" FILES ${BS_BANSHEEVULKANRENDERAPI_INC_NOFILTER})
 source_group("Header Files\\Managers" FILES ${BS_BANSHEEVULKANRENDERAPI_INC_MANAGERS})
+source_group("Header Files\\Win32" FILES ${BS_BANSHEEVULKANRENDERAPI_INC_WIN32})
 source_group("Source Files" FILES ${BS_BANSHEEVULKANRENDERAPI_SRC_NOFILTER})
 source_group("Source Files\\Managers" FILES ${BS_BANSHEEVULKANRENDERAPI_SRC_MANAGERS})
+source_group("Source Files\\Win32" FILES ${BS_BANSHEEVULKANRENDERAPI_SRC_WIN32})
 
 set(BS_BANSHEEVULKANRENDERAPI_SRC
 	${BS_BANSHEEVULKANRENDERAPI_INC_NOFILTER}
@@ -99,3 +117,15 @@ set(BS_BANSHEEVULKANRENDERAPI_SRC
 	${BS_BANSHEEVULKANRENDERAPI_INC_MANAGERS}
 	${BS_BANSHEEVULKANRENDERAPI_SRC_MANAGERS}
 )
+
+if(WIN32)
+	list(APPEND BS_BANSHEEVULKANRENDERAPI_SRC
+		${BS_BANSHEEVULKANRENDERAPI_INC_WIN32}
+		${BS_BANSHEEVULKANRENDERAPI_SRC_WIN32}
+	)
+elseif(LINUX)
+	list(APPEND BS_BANSHEEVULKANRENDERAPI_SRC
+		${BS_BANSHEEVULKANRENDERAPI_INC_LINUX}
+		${BS_BANSHEEVULKANRENDERAPI_SRC_LINUX}
+	)
+endif()

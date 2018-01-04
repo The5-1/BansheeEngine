@@ -18,14 +18,14 @@ function(prepend var prefix)
 endfunction()
 
 function(addForGeneration name)
-	set(BS_SCRIPT_PARSER_INCLUDE_DIRS ${BS_SCRIPT_PARSER_INCLUDE_DIRS} "${name}/Include" PARENT_SCOPE)
+	set(BS_SCRIPT_PARSER_INCLUDE_DIRS ${BS_SCRIPT_PARSER_INCLUDE_DIRS} "${name}" PARENT_SCOPE)
 	
 	include(${name}/CMakeSources.cmake)
 	string(TOUPPER ${name} LIBNAME)
 
 	set(H_FILES "")
 	FOREACH(f ${BS_${LIBNAME}_SRC})
-		IF("${f}" MATCHES ".*\\.h")
+		IF("${f}" MATCHES ".*\\.h" AND NOT "${f}" MATCHES "Win32|Linux")
 			LIST(APPEND H_FILES ${f})
 		ENDIF()
 	ENDFOREACH(f)
@@ -47,7 +47,10 @@ if(GENERATE_SCRIPT_BINDINGS)
 	addForGeneration(SBansheeEngine)
 	addForGeneration(SBansheeEditor)
 
-	set(BS_SCRIPT_PARSER_INCLUDE_DIRS ${BS_SCRIPT_PARSER_INCLUDE_DIRS} "BansheeMono/Include")
+	set(BS_SCRIPT_PARSER_INCLUDE_DIRS 
+		${BS_SCRIPT_PARSER_INCLUDE_DIRS} 
+		"BansheeMono"
+		"BansheeUtility/ThirdParty")
 
 	list(REMOVE_DUPLICATES BS_SCRIPT_PARSER_INCLUDE_DIRS)
 	list(REMOVE_DUPLICATES BS_SCRIPT_PARSER_H_FILES)
@@ -72,9 +75,17 @@ if(BansheeSBGen_FOUND)
 			-output-cs-engine ${BS_GENERATED_CS_ENGINE_OUTPUT_DIR}
 			-output-cs-editor ${BS_GENERATED_CS_EDITOR_OUTPUT_DIR}
 			-- ${BS_INCLUDE_DIRS}
+			-std=c++14
 			-DBS_STATIC_LIB
 			-DBS_SBGEN
-			-w)
+			-w
+			)
+
+		if(APPLE)
+			list(APPEND BS_GSB_COMMAND 
+				-isystem /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1)
+			list(APPEND BS_GSB_COMMAND -stdlib=libc++)
+		endif()
 
 		message(STATUS "Generating script bindings, please wait...")
 		execute_process(

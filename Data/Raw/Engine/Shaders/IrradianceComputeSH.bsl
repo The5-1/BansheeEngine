@@ -10,11 +10,7 @@ technique IrradianceComputeSH
 	{
 		struct SHCoeffsAndWeight
 		{
-			#if ORDER == 3
-			SHVector3RGB coeffs;
-			#else // Assuming order 5
-			SHVector5RGB coeffs;
-			#endif
+			SHVectorRGB coeffs;
 			float weight;
 		};
 	
@@ -32,31 +28,6 @@ technique IrradianceComputeSH
 		}			
 		
 		groupshared SHCoeffsAndWeight sCoeffs[TILE_WIDTH * TILE_HEIGHT];
-
-		/** 
-		 * Integrates area of a cube face projected onto the surface of the sphere, from [0, 0] to [u, v]. 
-		 * u & v expected in [-1, -1] to [1, 1] range.
-		 *
-		 * See http://www.rorydriscoll.com/2012/01/15/cubemap-texel-solid-angle/ for derivation.
-		 */
-		float integrateProjectedCubeArea(float u, float v)
-		{
-			return atan2(u * v, sqrt(u * u + v * v + 1.0f));
-		}
-		
-		/** Calculates solid angle of a texel projected onto a sphere. */
-		float texelSolidAngle(float u, float v, float invFaceSize)
-		{
-			float x0 = u - invFaceSize;
-			float x1 = u + invFaceSize;
-			float y0 = v - invFaceSize;
-			float y1 = v + invFaceSize;
-
-			return   integrateProjectedCubeArea(x1, y1)
-				   - integrateProjectedCubeArea(x0, y1)
-				   - integrateProjectedCubeArea(x1, y0)
-				   + integrateProjectedCubeArea(x0, y0);
-		}
 		
 		[numthreads(TILE_WIDTH, TILE_HEIGHT, 1)]
 		void csmain(
@@ -96,11 +67,7 @@ technique IrradianceComputeSH
 					// on a sphere. Without weighing that area would look too bright.
 					float weight = texelSolidAngle(u, v, invFaceSize);
 					
-					#if ORDER == 3
-					SHVector3 shBasis = SHBasis3(dir);
-					#else // Assuming order 5
-					SHVector5 shBasis = SHBasis5(dir);
-					#endif
+					SHVector shBasis = SHBasis(dir);
 					float3 radiance = gInputTex.SampleLevel(gInputSamp, dir, 0).rgb;
 					
 					SHMultiplyAdd(data.coeffs.R, shBasis, radiance.r * weight);

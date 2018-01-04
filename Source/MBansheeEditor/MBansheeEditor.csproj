@@ -31,14 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-	<CSFile Include="*.cs"/>
+    <CSFile Include="*.cs" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Inspectors\AnimationClipInspector.cs" />
@@ -47,6 +42,8 @@
     <Compile Include="Inspectors\AudioListenerInspector.cs" />
     <Compile Include="Inspectors\AudioSourceInspector.cs" />
     <Compile Include="Inspectors\BoneInspector.cs" />
+    <Compile Include="Inspectors\LightProbeVolumeInspector.cs" />
+    <Compile Include="Inspectors\ReflectionProbeInspector.cs" />
     <Compile Include="Inspectors\RenderSettingsInspector.cs" />
     <Compile Include="Utility\EdAnimationCurve.cs" />
     <Compile Include="Utility\SerializedSceneObject.cs" />
@@ -101,7 +98,10 @@
     <Compile Include="Windows\Inspector\InspectableRangedInt.cs" />
     <Compile Include="Windows\Inspector\Style\InspectableFieldStyleInfo.cs" />
     <Compile Include="Windows\LogWindow.cs" />
+    <Compile Include="Windows\Scene\Gizmos\CameraGizmo.cs" />
+    <Compile Include="Windows\Scene\Gizmos\LightProbeVolumeGizmo.cs" />
     <Compile Include="Windows\Scene\Gizmos\ReflectionProbeGizmo.cs" />
+    <Compile Include="Windows\Scene\Handles\HandleSliderSphere.cs" />
     <Compile Include="Window\DefaultSize.cs" />
     <Compile Include="Windows\DialogBox.cs" />
     <Compile Include="Utility\DragDrop.cs" />
@@ -237,7 +237,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(ProjectDir)..\..\Scripts\pdb2mdb.bat" "$(TargetPath)" "$(ConfigurationName)"</PostBuildEvent>
+    <PostBuildEvent Condition=" '$(OS)' != 'Unix' ">"$(ProjectDir)..\..\Scripts\pdb2mdb.bat" "$(TargetPath)" "$(ConfigurationName)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -4,7 +4,7 @@
 #define YY_USER_ACTION yylloc->first_column = yycolumn + 1; yylloc->first_line = yylineno + 1; yycolumn += (int)yyleng; yylloc->filename = getCurrentFilename(yyextra);
 #define YY_USER_INIT yylineno = 0; yycolumn = 0;
 %}
- 
+
 %option yylineno reentrant noyywrap nounistd never-interactive warn nodefault bison-bridge bison-locations
 %option outfile="BsLexerFX.c" header-file="BsLexerFX.h"
 %option extra-type="struct tagParseState *"
@@ -30,7 +30,8 @@ DEFINE_EXPR		[^\r\n]*
 %x DEFINE_COND_EXPR
 %x UNDEF_COND
 %x CONDITIONAL_IF
-%x CONDITIONAL_IFN
+%x CONDITIONAL_IFDEF
+%x CONDITIONAL_IFNDEF
 %x CONDITIONAL_ELIF
 %x CONDITIONAL_IGNORE
 
@@ -207,27 +208,38 @@ RGBA			{ yylval->intValue = 0xF; return TOKEN_COLORMASK; }
 <UNDEF_COND>{IDENTIFIER}		{ removeDefine(yyextra, yytext); BEGIN(INITIAL); }
 <UNDEF_COND>.					{ return yytext[0]; }
 
-#ifdef							{ BEGIN(CONDITIONAL_IF); }
+#if								{ BEGIN(CONDITIONAL_IF); }
 <CONDITIONAL_IF>{WS}			{ /* Skip blank */ }
 <CONDITIONAL_IF>{IDENTIFIER}	{ 
+	int isEnabled = pushConditional(yyextra, isDefineEnabled(yyextra, yytext));
+	if(!isEnabled)
+		BEGIN(CONDITIONAL_IGNORE);
+	else
+		BEGIN(INITIAL);
+}
+<CONDITIONAL_IF>.
+
+#ifdef							{ BEGIN(CONDITIONAL_IFDEF); }
+<CONDITIONAL_IFDEF>{WS}			{ /* Skip blank */ }
+<CONDITIONAL_IFDEF>{IDENTIFIER}	{ 
 	int isEnabled = pushConditional(yyextra, hasDefine(yyextra, yytext));
 	if(!isEnabled)
 		BEGIN(CONDITIONAL_IGNORE);
 	else
 		BEGIN(INITIAL);
 }
-<CONDITIONAL_IF>.				{ return yytext[0]; }
+<CONDITIONAL_IFDEF>.				{ return yytext[0]; }
 
-#ifndef							{ BEGIN(CONDITIONAL_IFN); }
-<CONDITIONAL_IFN>{WS}			{ /* Skip blank */ }
-<CONDITIONAL_IFN>{IDENTIFIER}	{ 
+#ifndef								{ BEGIN(CONDITIONAL_IFNDEF); }
+<CONDITIONAL_IFNDEF>{WS}			{ /* Skip blank */ }
+<CONDITIONAL_IFNDEF>{IDENTIFIER}	{ 
 	int isEnabled = pushConditional(yyextra, !hasDefine(yyextra, yytext));
 	if(!isEnabled)
 		BEGIN(CONDITIONAL_IGNORE);
 	else
 		BEGIN(INITIAL);
 }
-<CONDITIONAL_IFN>.				{ return yytext[0]; }
+<CONDITIONAL_IFNDEF>.				{ return yytext[0]; }
 
 #else							{ 
 	if(!switchConditional(yyextra))

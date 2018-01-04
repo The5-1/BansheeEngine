@@ -1,4 +1,5 @@
 #include "$ENGINE$\PPBase.bslinc"
+#define SH_ORDER 3
 #include "$ENGINE$\SHCommon.bslinc"
 #include "$ENGINE$\GBufferInput.bslinc"
 #include "$ENGINE$\PerCameraData.bslinc"
@@ -9,7 +10,7 @@ technique IrradianceEvaluate
 	mixin SHCommon;
 	mixin GBufferInput;
 	mixin PerCameraData;
-
+	
 	blend
 	{
 		target	
@@ -21,6 +22,10 @@ technique IrradianceEvaluate
 	
 	code
 	{
+		#ifndef MSAA_RESOLVE_0TH
+			#define MSAA_RESOLVE_0TH 0
+		#endif	
+	
 		#if MSAA_COUNT > 1
 			Texture2DMS<uint> gInputTex;
 		#else
@@ -30,17 +35,19 @@ technique IrradianceEvaluate
 		struct Tetrahedron
 		{
 			uint4 indices;
+			uint2 offsets[4];
 			float3x4 transform;
 		};
 		
 		struct TetrahedronFace
 		{
-			float3 corners[3];
-			float3 normals[3];
+			float4 corners[3];
+			float4 normals[3];
 			uint isQuadratic;
+			float padding[3];
 		};		
 		
-		StructuredBuffer<SHVector3RGB> gSHCoeffs;
+		Texture2D gSHCoeffs;
 		StructuredBuffer<Tetrahedron> gTetrahedra;
 		StructuredBuffer<TetrahedronFace> gTetFaces;
 		
@@ -59,7 +66,7 @@ technique IrradianceEvaluate
 			return gSkyIrradianceTex.SampleLevel(gLinearSamp, dir, 0).rgb * gSkyBrightness;
 		}
 		
-		float evaluateLambert(SHVector3 coeffs)
+		float evaluateLambert(SHVector coeffs)
 		{
 			// Multiply irradiance SH coefficients by cosine lobe (Lambert diffuse) and evaluate resulting SH
 			// See: http://cseweb.ucsd.edu/~ravir/papers/invlamb/josa.pdf for derivation of the
@@ -67,21 +74,18 @@ technique IrradianceEvaluate
 			float output = 0.0f;
 			
 			// Band 0 (factor 1.0)
-			output += coeffs.v0[0];
+			output += coeffs.v[0];
 			
 			// Band 1 (factor 2/3)
 			float f = (2.0f/3.0f);
-			float4 f4 = float4(f, f, f, f);
-			
-			output += dot(coeffs.v0.gba, f4.rgb);
+			for(int i = 1; i < 4; i++)
+				output += coeffs.v[i] * f;
 			
 			// Band 2 (factor 1/4)
 			f = (1.0f/4.0f);
-			f4 = float4(f, f, f, f);
-			
-			output += dot(coeffs.v1, f4);
-			output += coeffs.v2 * f;
-						
+			for(int i = 4; i < 9; i++)
+				output += coeffs.v[i] * f;
+
 			return output;
 		}	
 
@@ -161,7 +165,7 @@ technique IrradianceEvaluate
 		}
 		
 		float3 fsmain(VStoFS input
-			#if MSAA_COUNT > 1
+			#if MSAA_COUNT > 1 && !MSAA_RESOLVE_0TH
 			, uint sampleIdx : SV_SampleIndex
 			#endif
 			) : SV_Target0
@@ -170,7 +174,11 @@ technique IrradianceEvaluate
 		
 			SurfaceData surfaceData;
 			#if MSAA_COUNT > 1
-				surfaceData = getGBufferData(pixelPos, sampleIdx);
+				#if MSAA_RESOLVE_0TH
+					surfaceData = getGBufferData(pixelPos, 0);
+				#else
+					surfaceData = getGBufferData(pixelPos, sampleIdx);
+				#endif
 			#else
 				surfaceData = getGBufferData(pixelPos);
 			#endif		
@@ -181,7 +189,11 @@ technique IrradianceEvaluate
 			#else
 				uint volumeIdx;
 				#if MSAA_COUNT > 1
-					volumeIdx = gInputTex.Load(uint3(pixelPos, 0), sampleIdx).x;
+					#if MSAA_RESOLVE_0TH
+						volumeIdx = gInputTex.Load(uint3(pixelPos, 0), 0).x;
+					#else
+						volumeIdx = gInputTex.Load(uint3(pixelPos, 0), sampleIdx).x;
+					#endif
 				#else
 					volumeIdx = gInputTex.Load(uint3(pixelPos, 0)).x;
 				#endif
@@ -212,9 +224,9 @@ technique IrradianceEvaluate
 						else
 							t = solveCubic(A, B, C);
 							
-						float3 triA = face.corners[0] + t * face.normals[0];
-						float3 triB = face.corners[1] + t * face.normals[1];
-						float3 triC = face.corners[2] + t * face.normals[2];
+						float3 triA = face.corners[0].xyz + t * face.normals[0].xyz;
+						float3 triB = face.corners[1].xyz + t * face.normals[1].xyz;
+						float3 triC = face.corners[2].xyz + t * face.normals[2].xyz;
 						
 						float3 bary = calcTriBarycentric(P, triA, triB, triC);
 						
@@ -228,16 +240,19 @@ technique IrradianceEvaluate
 						coords = float4(factors, 1.0f - factors.x - factors.y - factors.z);
 					}
 
-					SHVector3RGB shCoeffs;
+					SHVectorRGB shCoeffs;
 					SHZero(shCoeffs);
 					
 					for(uint i = 0; i < 4; ++i)
 					{
 						if(coords[i] > 0.0f)
-							SHMultiplyAdd(shCoeffs, gSHCoeffs[volume.indices[i]], coords[i]);
+						{
+							SHVectorRGB coeff = SHLoad(gSHCoeffs, volume.offsets[i]);
+							SHMultiplyAdd(shCoeffs, coeff, coords[i]);
+						}
 					}
 					
-					SHVector3 shBasis = SHBasis3(surfaceData.worldNormal);
+					SHVector shBasis = SHBasis(surfaceData.worldNormal);
 					SHMultiply(shCoeffs.R, shBasis);
 					SHMultiply(shCoeffs.G, shBasis);
 					SHMultiply(shCoeffs.B, shBasis);

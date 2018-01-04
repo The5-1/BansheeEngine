@@ -4,17 +4,16 @@ include(CMakeSources.cmake)
 # Packages
 if(AUDIO_MODULE MATCHES "FMOD")
 	find_package(FMOD)
+	find_package(ogg)
+	find_package(vorbis)
 endif()
 
 # Includes
 set(BansheeFMOD_INC 
-	"Include" 
-	"../BansheeUtility/Include" 
-	"../BansheeCore/Include"
-	"../BansheeOpenAudio/Include"
-	${FMOD_INCLUDE_DIRS}
-	"../../Dependencies/libogg/include"
-	"../../Dependencies/libvorbis/include")
+	"./" 
+	"../BansheeUtility" 
+	"../BansheeCore"
+	"../BansheeOpenAudio")
 
 include_directories(${BansheeFMOD_INC})	
 	
@@ -27,10 +26,8 @@ target_compile_definitions(BansheeFMOD PRIVATE -DBS_FMOD_EXPORTS)
 # Libraries
 ## External libs: FMOD, Vorbis, Ogg
 target_link_libraries(BansheeFMOD PRIVATE ${FMOD_LIBRARIES})	
-
-add_library_per_config_multi(BansheeFMOD libvorbis libvorbis libvorbis libvorbis)
-add_library_per_config_multi(BansheeFMOD libvorbisfile libvorbis libvorbisfile libvorbisfile)
-add_library_per_config(BansheeFMOD libogg Release/libogg Debug/libogg)
+target_link_libraries(BansheeFMOD PRIVATE ${ogg_LIBRARIES})
+target_link_libraries(BansheeFMOD PRIVATE ${vorbis_LIBRARIES})
 
 ## Local libs
 target_link_libraries(BansheeFMOD PUBLIC BansheeUtility BansheeCore)

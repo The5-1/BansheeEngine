@@ -9,18 +9,11 @@ endif()
 
 # Includes
 set(BansheeVulkanRenderAPI_INC 
-	"Include" 
-	"../BansheeUtility/Include" 
-	"../BansheeCore/Include"
-	${Vulkan_INCLUDE_DIR}
-	${glslang_INCLUDE_DIR})
+	"./" 
+	"../BansheeUtility" 
+	"../BansheeCore"
+)
 
-if(WIN32)
-	set(BansheeVulkanRenderAPI_INC ${BansheeVulkanRenderAPI_INC} "Source/Win32")
-else()
-# TODO_OTHER_PLATFORMS_GO_HERE
-endif()	
-	
 include_directories(${BansheeVulkanRenderAPI_INC})	
 	
 # Target

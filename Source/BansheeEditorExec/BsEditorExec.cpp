@@ -3,7 +3,7 @@
 #include <iostream>
 #include <stdio.h>
 #include "BsEditorApplication.h"
-#include "BsCrashHandler.h"
+#include "Error/BsCrashHandler.h"
 
 #if BS_PLATFORM == BS_PLATFORM_WIN32
 #include <windows.h>
@@ -33,5 +33,14 @@ int CALLBACK WinMain(
 	CrashHandler::shutDown();
 
 	return 0;
+}
+#else
+using namespace bs;
+
+int main()
+{
+	EditorApplication::startUp();
+	EditorApplication::instance().runMainLoop();
+	EditorApplication::shutDown();
 }
 #endif // End BS_PLATFORM

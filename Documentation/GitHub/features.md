@@ -5,20 +5,61 @@ All features listed here are the ones currently available (implemented). If you 
 ---------------------------------------------------  
   
 ## Core
-* __Quality design__
-  * Modern code using C++14
+* __General__
+  * Modern C++14 code
   * Clean layered design
-  * Fully documented
   * Modular & plugin based
-  * Multiplatform ready
+  * Fully documented
+  * Platforms: Windows, Linux
 * __Renderer__
   * Vulkan, DX11 and OpenGL 4.5 render backends
   * Multi-threaded rendering
-  * Banshee Shading Language
-    * Unified shader code across all render backends
-	* Complete material definition in a single file
-	* High level concepts like mixins and overloads
+  * Node based compositor
+  * Modern high fidelity graphics
+    * Fast hybrid tiled deferred / clustered forward renderer
+    * Physically based shading
+    * Area light sources
+    * Reflection probes with geometry proxies
+    * Indirect illumination via irradiance maps
+    * Screen space reflections
+    * HDR rendering
+	  * Automatic eye adaptation
+	  * Tonemapping with adjustable curve
+	  * White balance
+	  * Color grading
+    * Gamma correct rendering	
+    * MSAA (both forward and deferred)
+    * Shadows
+      * Percentage closer shadows
+      * Cascaded shadow maps
+      * Fully dynamic
+    * Post processing effects
+	  * Screen space ambient occlusion (SSAO)
+	  * Depth of field
+	  * Fast approximate anti-aliasing (FXAA)
+  * Extensive material & shader system
+    * Custom high level shading language (BSL)
+	  * Unified shader code for all render backends
+	  * HLSL-based with high level extensions
+	  * Complete material definitions in a single file
+	  * High level concepts like mixins and overloads
     * Low level shader parsing and reflection for HLSL and GLSL
+  * Low-level rendering API
+	* Fully featured, backend agnostic wrapper for Vulkan/DX/OpenGL
+	* Full support for all SM5 features, including:
+	   * Geometry, tesselation and compute shaders
+	   * Instanced rendering
+	   * Texture arrays and GPU buffers
+	   * Unordered access textures and buffers
+	* Designed to support the next generation of render backends (i.e. Vulkan), including features:
+	   * Pipeline state objects
+	   * Command lists
+	   * GPU queues (async compute and upload)
+	   * Explicit multi-GPU support
+  * Fully extensible
+    * Plugin based render backends
+	* Plugin based renderer
+	* Support for renderer extensions
 * __Asset pipeline__
   * Asynchronous resource loading
   * Extensible importer system
@@ -27,7 +68,7 @@ All features listed here are the ones currently available (implemented). If you 
     * PNG, PSD, BMP, JPG, etc. images
     * OTF, TTF fonts
 	* OGG, FLAC, WAV, MP3 sounds
-    * HLSL9, HLSL11, GLSL shaders
+    * HLSL, GLSL shaders
 * __GUI system__
   * Unicode text rendering and input
   * Easy to use layout based system
@@ -69,11 +110,11 @@ All features listed here are the ones currently available (implemented). If you 
 	* Collision filtering
 	* Discrete or continuous collision detection
 * __Scripting__
-  * C# 6.0
+  * C# 7.0
   * Separate high level engine API
   * Integrated runtime for maximum performance
   * Full access to .NET framework
-  * Integration with Visual Studio
+  * Integration with Visual Studio, MonoDevelop
   * Automatic serialization
 	* Works with custom components, resources or arbitrary types
 	* Save/load data with no additional code
@@ -95,6 +136,9 @@ All features listed here are the ones currently available (implemented). If you 
 	* Find references to specific objects (e.g. all resources used in a scene)
 	* Serialize/deserialize with no additional code and with automatic versioning
 	* Generate diffs
+  * Vector (SIMD) instruction API
+    * Compiles transparently to all popular instruction sets
+    * SSE4.1, AVX, AVX2, AVX512 NEON, NEONv2 and others	
   * Utility library
     * Math
 	* File system
